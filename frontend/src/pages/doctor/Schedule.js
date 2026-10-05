@@ -3,7 +3,7 @@ import DoctorSidebar from '../../components/DoctorSidebar';
 import DoctorTopNav from '../../components/DoctorTopNav';
 
 const Schedule = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate] = useState(new Date());
   const [view, setView] = useState('Week'); // Week or Day
   
   // Dummy data for schedule blocks

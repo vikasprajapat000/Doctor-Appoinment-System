@@ -36,14 +36,14 @@ const register = async (req, res) => {
     // Create new user
     const user = new User({
       name,
-      email,
+      email: email ? email.trim().toLowerCase() : '',
       password: hashedPassword,
       role,
       specialization: specialization || '',
       licenseNumber: licenseNumber || '',
       qualification: qualification || '',
       experience: experience || 0,
-      status: role === 'patient' ? 'approved' : 'pending'
+      status: (role === 'patient' || role === 'superadmin') ? 'approved' : 'pending'
     });
 
     await user.save();
@@ -77,7 +77,8 @@ const register = async (req, res) => {
 // Login user
 const login = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, name, password, role } = req.body;
+    const identifier = (email || name || '').trim();
 
     // Fetch system settings
     let settings = await SystemSettings.findOne();
@@ -91,8 +92,21 @@ const login = async (req, res) => {
       return res.status(503).json({ message: 'System is currently under maintenance. Please try again later.' });
     }
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Find user by email or name (if superadmin)
+    let user;
+    if (role === 'superadmin') {
+      const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      user = await User.findOne({
+        role: 'superadmin',
+        $or: [
+          { name: { $regex: new RegExp(`^${escapeRegex(identifier)}$`, 'i') } },
+          { email: identifier.toLowerCase() }
+        ]
+      });
+    } else {
+      user = await User.findOne({ email: identifier.toLowerCase() });
+    }
+
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -137,7 +151,7 @@ const login = async (req, res) => {
         email: user.email, 
         role: user.role
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'doctor_appointment_secret_key_12345',
       { expiresIn: '24h' }
     );
 
@@ -162,7 +176,7 @@ const login = async (req, res) => {
   }
 };
 
-// ✅ LOGOUT USER
+// LOGOUT USER
 const logout = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -207,51 +221,47 @@ const checkSetupAllowed = async (req, res) => {
   }
 };
 
-// Setup Owner (One-time only)
+// Setup Owner (One-time only) — no secret key required
 const setupOwner = async (req, res) => {
   try {
-    const { name, email, password, secretKey } = req.body;
-    
-    // Verify secret key
-    if (secretKey !== 'OWNER2024') {
-      return res.status(403).json({ message: 'Invalid setup key' });
+    const { name, email, password } = req.body;
+
+    if (!name || !password) {
+      return res.status(400).json({ message: 'Name and password are required' });
     }
-    
+
     // Check if superadmin already exists
     const superadminExists = await User.findOne({ role: 'superadmin' });
     if (superadminExists) {
       return res.status(403).json({ message: 'Setup has already been completed' });
     }
-    
-    // Check if email already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: 'Email already registered' });
-    }
-    
+
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
+    const userEmail = (email && email.trim()) 
+      ? email.trim().toLowerCase() 
+      : `${name.trim().toLowerCase().replace(/\s+/g, '_')}@system.local`;
+
     // Create superadmin (auto-approved)
     const user = new User({
       name,
-      email,
+      email: userEmail,
       password: hashedPassword,
       role: 'superadmin',
       status: 'approved'
     });
-    
+
     await user.save();
 
     // Log activity
     await logActivity(user._id, 'register', 'SuperAdmin account created', null, {}, req);
-    
-    res.status(201).json({ 
+
+    res.status(201).json({
       message: 'Owner account created successfully',
       user: {
         id: user._id,
         name: user.name,
-        email: user.email,
         role: user.role
       }
     });
@@ -260,13 +270,26 @@ const setupOwner = async (req, res) => {
   }
 };
 
-// SuperAdmin Login
+// SuperAdmin Login — uses name or email
 const superadminLogin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
+    const loginIdentifier = (name || email || '').trim();
+
+    if (!loginIdentifier || !password) {
+      return res.status(400).json({ message: 'Name or email and password are required' });
+    }
+
+    const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     
-    // Find user with superadmin role
-    const user = await User.findOne({ email, role: 'superadmin' });
+    // Find superadmin by name OR email
+    const user = await User.findOne({
+      role: 'superadmin',
+      $or: [
+        { name: { $regex: new RegExp(`^${escapeRegex(loginIdentifier)}$`, 'i') } },
+        { email: loginIdentifier.toLowerCase() }
+      ]
+    });
     
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
@@ -276,6 +299,13 @@ const superadminLogin = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    if (user.status === 'rejected') {
+      return res.status(403).json({ 
+        message: `Your account has been rejected. Reason: ${user.rejectionReason || 'Not specified'}`,
+        status: 'rejected'
+      });
     }
 
     // ✅ UPDATE ONLINE STATUS AND LAST LOGIN
@@ -292,7 +322,7 @@ const superadminLogin = async (req, res) => {
         email: user.email,
         role: user.role 
       },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'doctor_appointment_secret_key_12345',
       { expiresIn: '24h' }
     );
 

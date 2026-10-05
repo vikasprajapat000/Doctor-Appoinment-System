@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/auth');
+const { verifyToken, verifySuperAdmin } = require('../middleware/auth');
 const superadminController = require('../controllers/superadminController');
 
 // Apply auth middleware to all routes
-router.use(authMiddleware);
+router.use(verifyToken);
+router.use(verifySuperAdmin);
 
 // Dashboard
 router.get('/dashboard/summary', superadminController.getDashboardSummary);

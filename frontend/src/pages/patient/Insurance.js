@@ -6,7 +6,6 @@ const Insurance = () => {
   const [insurance, setInsurance] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [formData, setFormData] = useState({
     provider: '',
     policyNumber: '',
@@ -41,22 +40,26 @@ const Insurance = () => {
       
       if (response.ok) {
         const data = await response.json();
-        setInsurance(data);
+        if (data && data.provider) {
+          setInsurance(data);
+        } else {
+          setInsurance(null);
+        }
         setFormData({
-          provider: data.provider || '',
-          policyNumber: data.policyNumber || '',
-          groupNumber: data.groupNumber || '',
-          planType: data.planType || 'PPO',
-          coverageStartDate: data.coverageStartDate ? data.coverageStartDate.split('T')[0] : '',
-          coverageEndDate: data.coverageEndDate ? data.coverageEndDate.split('T')[0] : '',
-          status: data.status || 'Active',
+          provider: data?.provider || '',
+          policyNumber: data?.policyNumber || '',
+          groupNumber: data?.groupNumber || '',
+          planType: data?.planType || 'PPO',
+          coverageStartDate: data?.coverageStartDate ? data.coverageStartDate.split('T')[0] : '',
+          coverageEndDate: data?.coverageEndDate ? data.coverageEndDate.split('T')[0] : '',
+          status: data?.status || 'Active',
           primaryInsured: {
-            name: data.primaryInsured?.name || '',
-            relationship: data.primaryInsured?.relationship || 'Self'
+            name: data?.primaryInsured?.name || '',
+            relationship: data?.primaryInsured?.relationship || 'Self'
           },
-          copay: data.copay || '',
-          deductible: data.deductible || '',
-          outOfPocketMax: data.outOfPocketMax || ''
+          copay: data?.copay || '',
+          deductible: data?.deductible || '',
+          outOfPocketMax: data?.outOfPocketMax || ''
         });
       }
       setLoading(false);

@@ -75,25 +75,40 @@ const Prescriptions = () => {
     const element = document.getElementById(`prescription-${prescriptionId}`);
     if (!element) return;
     
-    // Hide action buttons during print
-    const actionsDiv = element.querySelector('.prescription-actions');
-    if (actionsDiv) actionsDiv.style.display = 'none';
+    const clone = element.cloneNode(true);
+    const actionsDiv = clone.querySelector('.prescription-actions');
+    if (actionsDiv) actionsDiv.remove();
 
-    const printContents = element.innerHTML;
-    const originalContents = document.body.innerHTML;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert('Please allow popups to print prescriptions');
+      return;
+    }
 
-    document.body.innerHTML = `
-      <div style="padding: 2rem;">
-        <h2 style="text-align: center; margin-bottom: 2rem;">Medical Prescription</h2>
-        ${printContents}
-      </div>
-    `;
-
-    window.print();
-
-    // Restore original contents and state
-    document.body.innerHTML = originalContents;
-    window.location.reload(); // Quick way to restore React bindings after innerHTML swap
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Medical Prescription</title>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 30px; color: #333; }
+            h2 { color: #1e40af; border-bottom: 2px solid #e5e7eb; padding-bottom: 10px; }
+            .medication-card { border: 1px solid #e5e7eb; padding: 15px; border-radius: 8px; margin-bottom: 12px; }
+            .status-pill { padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+            .status-pill.active { background: #d1fae5; color: #065f46; }
+            .status-pill.expired { background: #fee2e2; color: #991b1b; }
+          </style>
+        </head>
+        <body>
+          <h2>Medical Prescription</h2>
+          ${clone.innerHTML}
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 250);
   };
 
   if (loading) {

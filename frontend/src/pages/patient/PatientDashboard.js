@@ -602,6 +602,60 @@ const PatientDashboard = () => {
               </button>
 
               <button
+                onClick={() => window.location.href = '/patient/queue-tracking'}
+                style={{
+                  padding: '1.5rem',
+                  background: 'white',
+                  border: '2px solid #3b82f6',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>⚡</div>
+                <div style={{ fontWeight: '600', color: '#2c3544' }}>Live Queue</div>
+              </button>
+
+              <button
+                onClick={() => window.location.href = '/patient/medicine-reminders'}
+                style={{
+                  padding: '1.5rem',
+                  background: 'white',
+                  border: '2px solid #10b981',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>💊</div>
+                <div style={{ fontWeight: '600', color: '#2c3544' }}>Medicine Reminders</div>
+              </button>
+
+              <button
+                onClick={() => window.location.href = '/patient/family-accounts'}
+                style={{
+                  padding: '1.5rem',
+                  background: 'white',
+                  border: '2px solid #6366f1',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+              >
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>👨‍👩‍👧</div>
+                <div style={{ fontWeight: '600', color: '#2c3544' }}>Family Accounts</div>
+              </button>
+
+              <button
                 onClick={() => window.location.href = '/patient/messages'}
                 style={{
                   padding: '1.5rem',

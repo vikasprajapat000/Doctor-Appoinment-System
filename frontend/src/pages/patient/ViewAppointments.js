@@ -23,6 +23,7 @@ const ViewAppointments = () => {
 
   useEffect(() => {
     fetchAppointments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const fetchAppointments = async () => {

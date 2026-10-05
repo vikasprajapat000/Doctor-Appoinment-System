@@ -662,9 +662,12 @@ exports.getBilling = async (req, res) => {
   try {
     const doctorId = req.user.id;
 
-    const billingRecords = await Billing.find({ doctorId })
+    const billingRecords = await Billing.find({
+      $or: [{ doctorId: doctorId }, { doctor: doctorId }]
+    })
       .populate('patientId', 'name email')
-      .sort({ date: -1 });
+      .populate('patient', 'name email')
+      .sort({ date: -1, createdAt: -1 });
 
     res.json(billingRecords);
   } catch (error) {

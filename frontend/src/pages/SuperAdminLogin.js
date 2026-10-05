@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const SuperAdminLogin = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    email: '',
+    name: '',
     password: ''
   });
   const [error, setError] = useState('');
@@ -24,15 +24,15 @@ const SuperAdminLogin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
+      const response = await fetch('http://localhost:5000/api/auth/superadmin-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          role: 'superadmin' // Force superadmin role
+          name: formData.name,
+          email: formData.name,
+          password: formData.password
         })
       });
 
@@ -101,14 +101,14 @@ const SuperAdminLogin = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="auth-label">
-              SuperAdmin Email *
+              SuperAdmin Name *
             </label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              placeholder="Enter your SuperAdmin email"
+              placeholder="Enter your SuperAdmin name"
               required
               className="auth-input"
             />

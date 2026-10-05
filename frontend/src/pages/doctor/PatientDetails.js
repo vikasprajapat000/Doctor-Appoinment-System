@@ -13,6 +13,7 @@ const PatientDetails = () => {
 
   useEffect(() => {
     fetchPatientData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const fetchPatientData = async () => {

@@ -31,13 +31,13 @@ exports.getDashboardSummary = async (req, res) => {
     const dailyAppointments = await Appointment.countDocuments({ createdAt: { $gte: today } });
     const monthlyAppointments = await Appointment.countDocuments({ createdAt: { $gte: firstDayOfMonth } });
     
-    const billingData = await Billing.find({ type: 'bill' });
+    const billingData = await Billing.find({ type: { $in: ['bill', 'Bill'] } });
     const totalRevenue = billingData.reduce((sum, bill) => sum + (bill.amount || 0), 0);
     
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
     const monthlyBilling = await Billing.find({
-      type: 'bill',
+      type: { $in: ['bill', 'Bill'] },
       createdAt: {
         $gte: new Date(currentYear, currentMonth, 1),
         $lt: new Date(currentYear, currentMonth + 1, 1)
@@ -107,7 +107,7 @@ exports.getRevenueChart = async (req, res) => {
       const monthLabel = month.toLocaleString('default', { month: 'short' });
       
       const monthlyBilling = await Billing.find({
-        type: 'bill',
+        type: { $in: ['bill', 'Bill'] },
         createdAt: { $gte: month, $lt: nextMonth }
       });
       
@@ -602,7 +602,10 @@ exports.getAllBilling = async (req, res) => {
   try {
     const billing = await Billing.find()
       .populate('patient', 'name email')
-      .sort({ createdAt: -1 });
+      .populate('patientId', 'name email')
+      .populate('doctor', 'name specialization')
+      .populate('doctorId', 'name specialization')
+      .sort({ createdAt: -1, date: -1 });
     
     res.json(billing);
   } catch (error) {
@@ -885,7 +888,7 @@ exports.getReportsSummary = async (req, res) => {
     const totalLabRecords = await LabRecord.countDocuments();
     const totalPrescriptions = await Prescription.countDocuments();
     
-    const billingData = await Billing.find({ type: 'bill' });
+    const billingData = await Billing.find({ type: { $in: ['bill', 'Bill'] } });
     const totalRevenue = billingData.reduce((sum, bill) => sum + (bill.amount || 0), 0);
     
     // Monthly trends for the last 6 months

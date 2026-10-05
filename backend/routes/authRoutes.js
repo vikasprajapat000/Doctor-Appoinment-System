@@ -3,21 +3,16 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middleware/auth');
 
-// Public routes
+// Public Authentication Routes (All roles: Patient, Doctor, Admin, SuperAdmin / Owner)
 router.post('/register', authController.register);
 router.post('/login', authController.login);
-router.get('/check-setup-allowed', authController.checkSetupAllowed);
-router.post('/setup-owner', authController.setupOwner);
-router.post('/superadmin-login', authController.superadminLogin);
 
-// ✅ PROTECTED LOGOUT ROUTE
+// Legacy aliases for backward compatibility
+router.post('/setup-owner', authController.register);
+router.post('/superadmin-login', authController.login);
+router.get('/check-setup-allowed', authController.checkSetupAllowed);
+
+// Protected Logout Route
 router.post('/logout', authMiddleware, authController.logout);
-
-
-
-// SuperAdmin Routes
-router.get('/check-setup-allowed', authController.checkSetupAllowed);
-router.post('/setup-owner', authController.setupOwner);
-router.post('/superadmin-login', authController.superadminLogin);
 
 module.exports = router;

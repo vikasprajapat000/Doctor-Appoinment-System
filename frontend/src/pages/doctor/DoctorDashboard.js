@@ -541,6 +541,33 @@ const DoctorDashboard = () => {
                   Manage availability
                 </div>
               </button>
+
+              <button
+                onClick={() => navigate('/doctor/video-consultations')}
+                style={{
+                  padding: '2rem',
+                  background: 'white',
+                  border: '2px solid #06b6d4',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textAlign: 'center'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(6, 182, 212, 0.2)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📹</div>
+                <div style={{ fontWeight: '700', color: '#2c3544', fontSize: '1.05rem' }}>WebRTC Consult</div>
+                <div style={{ fontSize: '0.85rem', color: '#6c757d', marginTop: '0.5rem' }}>
+                  Live video calls
+                </div>
+              </button>
             </div>
           </div>
         </div>

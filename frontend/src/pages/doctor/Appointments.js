@@ -24,6 +24,7 @@ const Appointments = () => {
   useEffect(() => {
     setActiveTab(getInitialTab());
     setCurrentPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
   // Advanced Datatable State

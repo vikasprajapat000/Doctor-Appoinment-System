@@ -15,7 +15,7 @@ const faqs = [
   {
     category: 'Doctors',
     questions: [
-      { q: 'How do I join HealthCareHub as a doctor?', a: 'Click the "Register" button and select "Doctor". Complete your profile and submit your credentials for verification. Once approved, you can start accepting patients.' },
+      { q: 'How do I join Doctor Appointment System as a doctor?', a: 'Click the "Register" button and select "Doctor". Complete your profile and submit your credentials for verification. Once approved, you can start accepting patients.' },
       { q: 'What fees does the platform charge?', a: 'Creating a profile is completely free. We charge a small platform fee only on successful consultations. Detailed fee structures are provided during onboarding.' },
       { q: 'Can I provide my own digital signature for prescriptions?', a: 'Yes, you can upload your digital signature in your Doctor Dashboard settings. It will be automatically appended to all digital prescriptions you generate.' },
       { q: 'How do I get paid?', a: 'Payments are settled to your registered bank account weekly. You can track all earnings, invoices, and completed consultations in the Billing section of your dashboard.' }
@@ -50,7 +50,7 @@ const FAQ = () => {
           Frequently Asked <span style={{ background: 'linear-gradient(135deg, #667eea, #764ba2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Questions</span>
         </h1>
         <p style={{ color: '#666', maxWidth: '600px', margin: '0 auto', lineHeight: '1.8', fontSize: '1.05rem' }}>
-          Find answers to the most common questions about HealthCareHub.
+          Find answers to the most common questions about Doctor Appointment System.
         </p>
       </section>
 

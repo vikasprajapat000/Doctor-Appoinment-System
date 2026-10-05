@@ -40,7 +40,7 @@ const SuperAdminSidebar = ({ isOpen, toggleSidebar }) => {
       <div className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">🏥</div>
-          <div className="sidebar-title">Doctor Management System</div>
+          <div className="sidebar-title">Doctor Appointment System</div>
           <button className="sidebar-close" onClick={toggleSidebar}>✕</button>
         </div>
 

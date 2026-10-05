@@ -4,9 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const OwnerAccess = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    secretKey: '',
     name: '',
-    email: '',
     password: '',
     confirmPassword: ''
   });
@@ -25,8 +23,8 @@ const OwnerAccess = () => {
     e.preventDefault();
     setError('');
 
-    if (!formData.secretKey || !formData.name || !formData.email || !formData.password) {
-      setError('All fields are required');
+    if (!formData.name || !formData.password) {
+      setError('Name and password are required');
       return;
     }
 
@@ -49,9 +47,7 @@ const OwnerAccess = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          secretKey: formData.secretKey,
           name: formData.name,
-          email: formData.email,
           password: formData.password
         })
       });
@@ -60,7 +56,7 @@ const OwnerAccess = () => {
 
       if (response.ok) {
         alert('✅ SuperAdmin account created successfully! Redirecting to SuperAdmin login...');
-        navigate('/owner-access');
+        navigate('/superadmin-login');
       } else {
         setError(data.message || 'Setup failed');
       }
@@ -112,24 +108,6 @@ const OwnerAccess = () => {
           </p>
         </div>
 
-        {/* Warning Box */}
-        <div style={{
-          padding: '1rem',
-          background: '#fff3cd',
-          border: '1px solid #ffc107',
-          borderRadius: '8px',
-          marginBottom: '2rem'
-        }}>
-          <p style={{ margin: 0, fontSize: '0.9rem', color: '#856404' }}>
-            ⚠️ <strong>Important:</strong> This is a one-time setup. The secret key is: <code style={{
-              background: '#fff',
-              padding: '0.25rem 0.5rem',
-              borderRadius: '4px',
-              fontWeight: '700'
-            }}>OWNER2024</code>
-          </p>
-        </div>
-
         {/* Error Message */}
         {error && (
           <div style={{
@@ -153,36 +131,6 @@ const OwnerAccess = () => {
               fontWeight: '600',
               color: '#2c3544'
             }}>
-              Secret Key *
-            </label>
-            <input
-              type="text"
-              name="secretKey"
-              value={formData.secretKey}
-              onChange={handleChange}
-              placeholder="Enter secret key"
-              required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '2px solid #e5e7eb',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-            />
-          </div>
-
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontWeight: '600',
-              color: '#2c3544'
-            }}>
               Full Name *
             </label>
             <input
@@ -199,37 +147,8 @@ const OwnerAccess = () => {
                 borderRadius: '8px',
                 fontSize: '1rem',
                 outline: 'none',
-                transition: 'border-color 0.2s'
-              }}
-              onFocus={(e) => e.target.style.borderColor = '#667eea'}
-              onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
-            />
-          </div>
-
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              marginBottom: '0.5rem',
-              fontWeight: '600',
-              color: '#2c3544'
-            }}>
-              Email *
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter your email"
-              required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '2px solid #e5e7eb',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                outline: 'none',
-                transition: 'border-color 0.2s'
+                transition: 'border-color 0.2s',
+                boxSizing: 'border-box'
               }}
               onFocus={(e) => e.target.style.borderColor = '#667eea'}
               onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
@@ -259,7 +178,8 @@ const OwnerAccess = () => {
                 borderRadius: '8px',
                 fontSize: '1rem',
                 outline: 'none',
-                transition: 'border-color 0.2s'
+                transition: 'border-color 0.2s',
+                boxSizing: 'border-box'
               }}
               onFocus={(e) => e.target.style.borderColor = '#667eea'}
               onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
@@ -289,7 +209,8 @@ const OwnerAccess = () => {
                 borderRadius: '8px',
                 fontSize: '1rem',
                 outline: 'none',
-                transition: 'border-color 0.2s'
+                transition: 'border-color 0.2s',
+                boxSizing: 'border-box'
               }}
               onFocus={(e) => e.target.style.borderColor = '#667eea'}
               onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
@@ -320,7 +241,7 @@ const OwnerAccess = () => {
 
           <button
             type="button"
-            onClick={() => navigate('/owner-access')}
+            onClick={() => navigate('/superadmin-login')}
             style={{
               width: '100%',
               padding: '0.75rem',
@@ -348,7 +269,7 @@ const OwnerAccess = () => {
           color: '#0369a1'
         }}>
           <p style={{ margin: 0 }}>
-            ℹ️ After setup, you'll be redirected to the SuperAdmin login page to access your dashboard.
+            ℹ️ This is a one-time setup. After creating the account, log in with your name and password.
           </p>
         </div>
       </div>

@@ -21,7 +21,6 @@ const MyProfile = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
-  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -90,7 +89,6 @@ const MyProfile = () => {
     const file = fileToUpload || selectedImage;
     if (!file) return;
 
-    setUploadingImage(true);
     setError('');
     setMessage('');
 
@@ -120,8 +118,6 @@ const MyProfile = () => {
       }
     } catch (error) {
       setError('Error uploading image. Please try again.');
-    } finally {
-      setUploadingImage(false);
     }
   };
 

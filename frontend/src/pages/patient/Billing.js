@@ -44,12 +44,12 @@ const Billing = () => {
   };
 
   const totalOutstanding = billings
-    .filter(b => b.status === 'pending')
-    .reduce((sum, b) => sum + b.amount, 0);
+    .filter(b => b.status && ['pending', 'overdue'].includes(b.status.toLowerCase()))
+    .reduce((sum, b) => sum + (b.amount || 0), 0);
 
   const totalPaid = billings
-    .filter(b => b.status === 'paid')
-    .reduce((sum, b) => sum + b.amount, 0);
+    .filter(b => b.status && b.status.toLowerCase() === 'paid')
+    .reduce((sum, b) => sum + (b.amount || 0), 0);
 
   const handlePayNow = (bill) => {
     setSelectedBill(bill);
@@ -186,10 +186,10 @@ const Billing = () => {
                           {bill.description || 'Medical Services'}
                         </td>
                         <td style={{ padding: '1rem', color: '#6c757d' }}>
-                          {formatDate(bill.createdAt)}
+                          {formatDate(bill.createdAt || bill.date || new Date())}
                         </td>
                         <td style={{ padding: '1rem', fontWeight: '700', fontSize: '1.1rem' }}>
-                          ${bill.amount.toFixed(2)}
+                          ${(bill.amount || 0).toFixed(2)}
                         </td>
                         <td style={{ padding: '1rem' }}>
                           <span style={{
@@ -197,26 +197,15 @@ const Billing = () => {
                             borderRadius: '12px',
                             fontSize: '0.85rem',
                             fontWeight: '600',
-                            background: bill.status === 'paid' ? '#d1fae5' : '#fee2e2',
-                            color: bill.status === 'paid' ? '#065f46' : '#991b1b'
+                            background: bill.status && bill.status.toLowerCase() === 'paid' ? '#d1fae5' : '#fee2e2',
+                            color: bill.status && bill.status.toLowerCase() === 'paid' ? '#065f46' : '#991b1b'
                           }}>
-                            {bill.status === 'paid' ? '✓ Paid' : '⏳ Pending'}
+                            {bill.status && bill.status.toLowerCase() === 'paid' ? '✓ Paid' : '⏳ Pending'}
                           </span>
                         </td>
                         <td style={{ padding: '1rem' }}>
                           <div style={{ display: 'flex', gap: '0.5rem' }}>
-                            <button style={{
-                              padding: '0.5rem 0.75rem',
-                              background: '#4a9eff',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: 'pointer',
-                              fontSize: '0.85rem'
-                            }}>
-                              View
-                            </button>
-                            {bill.status === 'pending' && (
+                            {bill.status && bill.status.toLowerCase() !== 'paid' && (
                               <button 
                                 onClick={() => handlePayNow(bill)}
                                 style={{

@@ -10,7 +10,7 @@ const AdminSchedule = () => {
   
   // Date and View State
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDoctor, setSelectedDoctor] = useState('all');
+  const [selectedDoctor] = useState('all');
   
   // Details Modal
   const [activeModal, setActiveModal] = useState(null);

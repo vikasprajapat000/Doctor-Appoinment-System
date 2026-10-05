@@ -10,7 +10,6 @@ const AdminDashboard = () => {
     setSidebarOpen(!sidebarOpen);
   };
 
-  const [user, setUser] = useState(null);
   const [dashboardData, setDashboardData] = useState({
     totalUsers: 0,
     totalPatients: 0,
@@ -39,8 +38,6 @@ const AdminDashboard = () => {
   const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem('token');
-      const userInfo = JSON.parse(localStorage.getItem('user'));
-      setUser(userInfo);
 
       const headers = {
         'Authorization': `Bearer ${token}`,

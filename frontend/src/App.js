@@ -5,9 +5,6 @@ import './App.css';
 // ==================== AUTH PAGES ====================
 import Login from './pages/Login';
 import Register from './pages/Register';
-import OwnerAccess from './pages/OwnerAccess';
-import SuperAdminLogin from './pages/SuperAdminLogin';
-
 
 // Add this with your other imports
 import Home from './pages/Home';
@@ -33,6 +30,10 @@ import Insurance from './pages/patient/Insurance';
 import VideoConsultations from './pages/patient/VideoConsultations';
 import Diagnoses from './pages/patient/Diagnoses';
 import TreatmentPlans from './pages/patient/TreatmentPlans';
+import LiveQueueTracking from './pages/patient/LiveQueueTracking';
+import MedicineReminders from './pages/patient/MedicineReminders';
+import FamilyAccounts from './pages/patient/FamilyAccounts';
+import AIAssistantWidget from './components/AIAssistantWidget';
 
 // ==================== DOCTOR PAGES ====================
 import DoctorDashboard from './pages/doctor/DoctorDashboard';
@@ -52,6 +53,7 @@ import DoctorProfile from './pages/doctor/MyProfile';
 import DoctorVideoConsultations from './pages/doctor/VideoConsultations';
 import DoctorDiagnoses from './pages/doctor/Diagnoses';
 import DoctorTreatmentPlans from './pages/doctor/TreatmentPlans';
+import DoctorLiveQueue from './pages/doctor/LiveQueue';
 
 // ==================== ADMIN PAGES - ONE COMPONENT PER ROUTE ====================
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -118,13 +120,14 @@ function App() {
           <Route path="/doctors" element={<Doctors />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/faq" element={<FAQ />} />
-          <Route path="/setup-owner" element={<OwnerAccess />} />
-          <Route path="/owner-access" element={<SuperAdminLogin />} />
 
           {/* ==================== PATIENT ROUTES ==================== */}
           <Route path="/patient/dashboard" element={<ProtectedRoute allowedRole="patient"><PatientDashboard /></ProtectedRoute>} />
           <Route path="/patient/book-appointment" element={<ProtectedRoute allowedRole="patient"><BookAppointment /></ProtectedRoute>} />
           <Route path="/patient/appointments" element={<ProtectedRoute allowedRole="patient"><ViewAppointments /></ProtectedRoute>} />
+          <Route path="/patient/queue-tracking" element={<ProtectedRoute allowedRole="patient"><LiveQueueTracking /></ProtectedRoute>} />
+          <Route path="/patient/medicine-reminders" element={<ProtectedRoute allowedRole="patient"><MedicineReminders /></ProtectedRoute>} />
+          <Route path="/patient/family-accounts" element={<ProtectedRoute allowedRole="patient"><FamilyAccounts /></ProtectedRoute>} />
           <Route path="/patient/visit-history" element={<ProtectedRoute allowedRole="patient"><VisitHistory /></ProtectedRoute>} />
           <Route path="/patient/prescriptions" element={<ProtectedRoute allowedRole="patient"><Prescriptions /></ProtectedRoute>} />
           <Route path="/patient/lab-records" element={<ProtectedRoute allowedRole="patient"><LabRecords /></ProtectedRoute>} />
@@ -144,6 +147,7 @@ function App() {
           <Route path="/doctor/patients/:id" element={<ProtectedRoute allowedRole="doctor"><PatientDetails /></ProtectedRoute>} />
           <Route path="/doctor/patient-history" element={<ProtectedRoute allowedRole="doctor"><DoctorPatients /></ProtectedRoute>} />
           <Route path="/doctor/appointments" element={<ProtectedRoute allowedRole="doctor"><DoctorAppointments /></ProtectedRoute>} />
+          <Route path="/doctor/live-queue" element={<ProtectedRoute allowedRole="doctor"><DoctorLiveQueue /></ProtectedRoute>} />
           <Route path="/doctor/appointments/pending" element={<ProtectedRoute allowedRole="doctor"><DoctorPendingAppointments /></ProtectedRoute>} />
           <Route path="/doctor/today-schedule" element={<ProtectedRoute allowedRole="doctor"><DoctorAppointments /></ProtectedRoute>} />
           <Route path="/doctor/upcoming-schedule" element={<ProtectedRoute allowedRole="doctor"><DoctorAppointments /></ProtectedRoute>} />
@@ -193,6 +197,7 @@ function App() {
           {/* ==================== CATCH ALL ROUTE ==================== */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <AIAssistantWidget />
       </div>
     </Router>
   );

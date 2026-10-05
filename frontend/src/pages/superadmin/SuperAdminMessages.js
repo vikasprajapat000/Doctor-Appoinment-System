@@ -23,6 +23,7 @@ const SuperAdminMessages = () => {
     if (selectedThread) {
       fetchThreadDetails(selectedThread.partnerId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedThread]);
 
   useEffect(() => {
@@ -94,10 +95,6 @@ const SuperAdminMessages = () => {
       const threadData = response.ok ? await response.json() : [];
       setThreadMsgs(threadData);
 
-      // Mark unread messages as read (Simulated if backend doesn't support yet)
-      const currentUserStr = localStorage.getItem('user');
-      const currentUserId = currentUserStr ? JSON.parse(currentUserStr).id : null;
-
       const updatedThreads = messages.map(t => {
         if (t.partnerId === partnerId) return { ...t, unread: false };
         return t;
@@ -129,7 +126,7 @@ const SuperAdminMessages = () => {
       });
 
       if (response.ok) {
-        const newMsg = await response.json();
+        await response.json();
         setReplyText('');
         // Optimistically update UI
         fetchThreadDetails(selectedThread.partnerId);

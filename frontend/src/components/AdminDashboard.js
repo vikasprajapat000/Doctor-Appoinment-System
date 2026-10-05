@@ -18,7 +18,7 @@ const AdminDashboard = () => {
   const [recentUsers, setRecentUsers] = useState([]);
   const [recentAppointments, setRecentAppointments] = useState([]);
   const [revenueChart, setRevenueChart] = useState([]);
-  const [systemStats, setSystemStats] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
   const API_URL = 'http://localhost:5000/api/admin';

@@ -12,14 +12,11 @@ const AdminMessages = () => {
   const [doctors, setDoctors] = useState([]);
   const [superAdmins, setSuperAdmins] = useState([]);
   const [statistics, setStatistics] = useState(null);
-  const [loading, setLoading] = useState(true);
   
   // UI States
   const [showCompose, setShowCompose] = useState(false);
   const [showConversation, setShowConversation] = useState(false);
-  const [showBroadcastStatus, setShowBroadcastStatus] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState(null);
-  const [broadcastStatus, setBroadcastStatus] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [activeTab, setActiveTab] = useState('mine'); // mine, all, patient-doctor
   
@@ -107,9 +104,7 @@ const AdminMessages = () => {
   // Initial load
   useEffect(() => {
     const loadData = async () => {
-      setLoading(true);
       await Promise.all([fetchMyMessages(), fetchUsers(), fetchStatistics()]);
-      setLoading(false);
     };
     loadData();
   }, [fetchMyMessages]);

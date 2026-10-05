@@ -5,10 +5,8 @@ import { useNavigate } from 'react-router-dom';
 const SetupOwner = () => {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     password: '',
-    confirmPassword: '',
-    secretKey: ''
+    confirmPassword: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -59,11 +57,6 @@ const SetupOwner = () => {
       return;
     }
 
-    if (formData.secretKey !== 'OWNER2024') {
-      setError('Invalid setup key. Contact system administrator.');
-      return;
-    }
-
     setLoading(true);
 
     try {
@@ -74,9 +67,7 @@ const SetupOwner = () => {
         },
         body: JSON.stringify({
           name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          secretKey: formData.secretKey
+          password: formData.password
         })
       });
 
@@ -207,18 +198,6 @@ const SetupOwner = () => {
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Email Address</label>
-              <input
-                type="email"
-                name="email"
-                className="form-input"
-                placeholder="owner@yourdomain.com"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
 
             <div className="form-group">
               <label className="form-label">Password</label>
@@ -246,21 +225,6 @@ const SetupOwner = () => {
               />
             </div>
 
-            <div className="form-group">
-              <label className="form-label">Setup Key</label>
-              <input
-                type="password"
-                name="secretKey"
-                className="form-input"
-                placeholder="Enter setup key"
-                value={formData.secretKey}
-                onChange={handleChange}
-                required
-              />
-              <p style={{ fontSize: '0.8rem', color: '#6c757d', marginTop: '0.5rem' }}>
-                Setup key: <strong>OWNER2024</strong>
-              </p>
-            </div>
 
             <button
               type="submit"

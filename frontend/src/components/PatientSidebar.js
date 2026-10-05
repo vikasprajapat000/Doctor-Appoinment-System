@@ -111,7 +111,10 @@ const PatientSidebar = ({ isOpen, toggleSidebar }) => {
             <ul className="nav-menu">
               <NavLink to="/patient/book-appointment" icon="📅" label="Book Appointment" />
               <NavLink to="/patient/appointments" icon="📋" label="My Appointments" />
+              <NavLink to="/patient/queue-tracking" icon="⚡" label="Live Queue Tracking" />
               <NavLink to="/patient/video-consultations" icon="🎥" label="Video Consultations" />
+              <NavLink to="/patient/medicine-reminders" icon="💊" label="Medicine Reminders" />
+              <NavLink to="/patient/family-accounts" icon="👨‍👩‍👧" label="Family Accounts" />
             </ul>
           </div>
 

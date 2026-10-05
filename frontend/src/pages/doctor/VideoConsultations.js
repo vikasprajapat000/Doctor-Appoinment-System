@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DoctorSidebar from '../../components/DoctorSidebar';
 import DoctorTopNav from '../../components/DoctorTopNav';
+import VideoCallRoom from '../../components/VideoCallRoom';
 import './VideoConsultations.css';
 
 const VideoConsultations = () => {
@@ -9,6 +10,8 @@ const VideoConsultations = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('upcoming'); // upcoming, completed, all
+  const [activeCallRoom, setActiveCallRoom] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem('user')) || {};
 
   useEffect(() => {
     fetchVideoAppointments();
@@ -58,15 +61,6 @@ const VideoConsultations = () => {
   };
 
   const filteredApts = getFilteredAppointments();
-
-  const isJoinable = (aptDate, aptTime) => {
-    const aptDateTime = new Date(`${aptDate.split('T')[0]}T${aptTime}:00`);
-    const now = new Date();
-    // Allow joining 15 mins before to 1 hour after start
-    const fifteenMinsBefore = new Date(aptDateTime.getTime() - 15 * 60000);
-    const oneHourAfter = new Date(aptDateTime.getTime() + 60 * 60000);
-    return now >= fifteenMinsBefore && now <= oneHourAfter;
-  };
 
   return (
     <div className="dashboard-layout">
@@ -124,7 +118,6 @@ const VideoConsultations = () => {
           ) : (
             <div className="video-grid">
               {filteredApts.map(apt => {
-                const joinable = isJoinable(apt.date, apt.time) && apt.status === 'confirmed';
                 const dateObj = new Date(apt.date);
 
                 return (
@@ -158,22 +151,18 @@ const VideoConsultations = () => {
                           Session Ended
                         </button>
                       ) : (
-                        <a 
-                          href={joinable && apt.videoLink ? apt.videoLink : '#'} 
-                          target={joinable && apt.videoLink ? "_blank" : "_self"}
-                          rel="noreferrer"
+                        <button 
                           className="btn-join"
-                          onClick={e => (!joinable || !apt.videoLink) && e.preventDefault()}
+                          onClick={() => setActiveCallRoom(apt._id)}
                           style={{
-                            opacity: (!joinable || !apt.videoLink) ? 0.7 : 1,
-                            cursor: (!joinable || !apt.videoLink) ? 'not-allowed' : 'pointer',
-                            background: (!joinable || !apt.videoLink) ? '#94a3b8' : ''
+                            cursor: 'pointer',
+                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                            color: 'white',
+                            border: 'none'
                           }}
                         >
-                          {apt.status === 'pending' ? 'Needs Confirmation' : 
-                           !apt.videoLink ? 'No Link Provided' :
-                           joinable ? '📹 Join Call Now' : 'Not Time Yet'}
-                        </a>
+                          📹 Join HD Consultation
+                        </button>
                       )}
                       <Link to={`/doctor/appointments`} className="btn-details">
                         Manage
@@ -187,6 +176,16 @@ const VideoConsultations = () => {
 
         </div>
       </div>
+
+      {/* WebRTC Video Consultation Room Modal */}
+      {activeCallRoom && (
+        <VideoCallRoom
+          roomId={`room-${activeCallRoom}`}
+          userRole="Doctor"
+          userName={currentUser.name ? `Dr. ${currentUser.name}` : 'Doctor'}
+          onClose={() => setActiveCallRoom(null)}
+        />
+      )}
     </div>
   );
 };

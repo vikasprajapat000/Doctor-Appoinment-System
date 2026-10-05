@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import PatientSidebar from '../../components/PatientSidebar';
 import PatientTopNav from '../../components/PatientTopNav';
 
+import VideoCallRoom from '../../components/VideoCallRoom';
+
 const VideoConsultations = () => {
   const navigate = useNavigate();
   const [appointments, setAppointments] = useState([]);
@@ -10,6 +12,8 @@ const VideoConsultations = () => {
   const [filter, setFilter] = useState('all');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [now, setNow] = useState(new Date());
+  const [activeCallRoom, setActiveCallRoom] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem('user')) || {};
 
   useEffect(() => {
     fetchVideoConsultations();
@@ -270,16 +274,16 @@ const VideoConsultations = () => {
                         {/* Actions */}
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                           <button
-                            onClick={() => alert(joinable ? '🚀 Joining video call... (Video integration would launch here)' : 'Video call will be available 5 minutes before your appointment')}
+                            onClick={() => setActiveCallRoom(apt._id)}
                             style={{
                               padding: '0.75rem 1.5rem',
-                              background: joinable ? 'linear-gradient(135deg, #10b981, #059669)' : '#e5e7eb',
-                              color: joinable ? 'white' : '#9ca3af',
-                              border: 'none', borderRadius: '8px', cursor: joinable ? 'pointer' : 'not-allowed',
+                              background: joinable ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #3b82f6, #2563eb)',
+                              color: 'white',
+                              border: 'none', borderRadius: '8px', cursor: 'pointer',
                               fontWeight: '700', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem'
                             }}
                           >
-                            🎥 {joinable ? 'Join Video Call' : 'Call Not Active'}
+                            🎥 Join Video Call Room
                           </button>
 
                           {(apt.status === 'pending' || apt.status === 'confirmed') && (
@@ -341,6 +345,16 @@ const VideoConsultations = () => {
           </div>
         </div>
       </div>
+
+      {/* Real-time WebRTC Video Consultation Room */}
+      {activeCallRoom && (
+        <VideoCallRoom
+          roomId={`room-${activeCallRoom}`}
+          userRole="Patient"
+          userName={currentUser.name || 'Patient'}
+          onClose={() => setActiveCallRoom(null)}
+        />
+      )}
     </div>
   );
 };

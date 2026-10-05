@@ -108,6 +108,7 @@ const DoctorSidebar = ({ isOpen, toggleSidebar }) => {
             <div className="nav-section-title">APPOINTMENTS</div>
             <ul className="nav-menu">
               <NavLink to="/doctor/appointments" icon="📅" label="Appointments" />
+              <NavLink to="/doctor/live-queue" icon="⚡" label="Live Queue Controller" />
               <NavLink to="/doctor/today-schedule" icon="📆" label="Today's Schedule" />
               <NavLink to="/doctor/upcoming-schedule" icon="🗓️" label="Upcoming Schedule" />
               <NavLink to="/doctor/video-consultations" icon="🎥" label="Video Consultations" />

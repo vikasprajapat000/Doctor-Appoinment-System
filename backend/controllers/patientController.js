@@ -35,10 +35,10 @@ exports.getDashboardData = async (req, res) => {
 
     // Get outstanding balance
     const unpaidBills = await Billing.find({
-      patientId: patientId,
-      status: 'pending'
+      $or: [{ patientId: patientId }, { patient: patientId }],
+      status: { $in: ['pending', 'Pending', 'overdue', 'Overdue'] }
     });
-    const outstandingBalance = unpaidBills.reduce((sum, bill) => sum + bill.amount, 0);
+    const outstandingBalance = unpaidBills.reduce((sum, bill) => sum + (bill.amount || 0), 0);
 
     // Get lab reports count
     const labReports = await LabRecord.countDocuments({
@@ -544,7 +544,11 @@ exports.getBilling = async (req, res) => {
   try {
     const patientId = req.user.id;
 
-    const billing = await Billing.find({ patientId: patientId })
+    const billing = await Billing.find({
+      $or: [{ patientId: patientId }, { patient: patientId }]
+    })
+      .populate('doctor', 'name specialization')
+      .populate('doctorId', 'name specialization')
       .sort({ createdAt: -1 });
 
     res.json(billing);
@@ -562,8 +566,10 @@ exports.getSingleBill = async (req, res) => {
 
     const bill = await Billing.findOne({
       _id: id,
-      patient: patientId
-    });
+      $or: [{ patient: patientId }, { patientId: patientId }]
+    })
+      .populate('doctor', 'name specialization')
+      .populate('doctorId', 'name specialization');
 
     if (!bill) {
       return res.status(404).json({ message: 'Bill not found' });
@@ -585,19 +591,19 @@ exports.payBill = async (req, res) => {
 
     const bill = await Billing.findOne({
       _id: id,
-      patient: patientId
+      $or: [{ patient: patientId }, { patientId: patientId }]
     });
 
     if (!bill) {
       return res.status(404).json({ message: 'Bill not found' });
     }
 
-    if (bill.status === 'paid') {
+    if (bill.status && bill.status.toLowerCase() === 'paid') {
       return res.status(400).json({ message: 'Bill is already paid' });
     }
 
     // Simulate payment processing delay & success
-    bill.status = 'paid';
+    bill.status = 'Paid';
     if(paymentMethod) bill.paymentMethod = paymentMethod;
     bill.paymentDate = new Date();
     await bill.save();
@@ -785,8 +791,8 @@ exports.getNotifications = async (req, res) => {
 
     // Get pending bills
     const pendingBills = await Billing.countDocuments({
-      patient: patientId,
-      status: 'pending'
+      $or: [{ patientId: patientId }, { patient: patientId }],
+      status: { $in: ['pending', 'Pending', 'overdue', 'Overdue'] }
     });
 
     res.json({
@@ -1091,7 +1097,22 @@ exports.getInsurance = async (req, res) => {
     const patient = await User.findById(patientId).select('insurance');
 
     if (!patient || !patient.insurance || !patient.insurance.provider) {
-      return res.status(404).json({ message: 'No insurance found' });
+      return res.json({
+        provider: '',
+        policyNumber: '',
+        groupNumber: '',
+        planType: 'PPO',
+        coverageStartDate: null,
+        coverageEndDate: null,
+        status: 'Active',
+        primaryInsured: {
+          name: '',
+          relationship: 'Self'
+        },
+        copay: '',
+        deductible: '',
+        outOfPocketMax: ''
+      });
     }
 
     res.json(patient.insurance);

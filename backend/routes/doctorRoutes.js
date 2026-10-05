@@ -37,6 +37,7 @@ router.get('/lab-records', doctorController.getLabRecords);
 // ==================== VISIT HISTORY ====================
 router.post('/visit-history', doctorController.addVisitHistory);
 router.get('/visit-history', doctorController.getVisitHistory);
+router.get('/visits', doctorController.getVisitHistory);
 
 // ==================== DIAGNOSES & TREATMENT PLANS ====================
 router.get('/diagnoses', doctorController.getDiagnoses);
